@@ -58,7 +58,7 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
         borderColor: 'var(--border-primary)',
         color: 'var(--text-primary)'
       }}
-      className="w-full rounded-[40px] p-8 shadow-2xl shadow-blue-500/5 border mb-8 transition-colors duration-500"
+      className="w-full rounded-[40px] p-8 shadow-2xl shadow-blue-500/5 border mb-8 transition-colors duration-500 select-none"
     >
       <div className="flex justify-between items-center mb-10">
         <h3 className="text-[10px] font-black uppercase tracking-[0.3em]" style={{color: 'var(--text-secondary)'}}>
