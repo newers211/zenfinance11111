@@ -87,13 +87,13 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
         </div>
       </div>
 
-      <div className="h-64 w-full relative flex flex-col md:flex-row items-center md:items-stretch">
+      <div className="h-56 md:h-64 w-full relative flex flex-col md:flex-row items-center md:items-stretch">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={chartData.length ? chartData : [{ name: 'Empty', value: 1 }]}
-              innerRadius={75}
-              outerRadius={95}
+              innerRadius={65}
+              outerRadius={85}
               paddingAngle={chartData.length ? 5 : 0}
               dataKey="value"
               stroke="none"
@@ -135,20 +135,20 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
                   const val = currencySign === '₽' ? item.value : item.value / rate;
                   const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
                   const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
+                  // Динамическое позиционирование в зависимости от индекса (слева или справа)
+                  const isRight = selectedIndex % 2 === 0;
                   return (
-                    <div className="flex items-center gap-3 bg-transparent md:bg-white/0 md:backdrop-blur-sm md:rounded-xl md:p-3 md:border md:border-gray-100 dark:md:border-zinc-800">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: color }} />
-                      <div className="text-left">
-                        <div className="text-xs font-black uppercase" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
+                    <div className={`flex items-center gap-2 md:gap-3 bg-transparent md:bg-white/0 md:backdrop-blur-sm md:rounded-xl md:p-3 md:border md:border-gray-100 dark:md:border-zinc-800 ${isRight ? 'flex-row-reverse md:flex-row' : 'flex-row'}`}>
+                      <div className="w-8 md:w-10 h-8 md:h-10 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
+                      <div className={`text-left ${isRight ? 'text-right md:text-left' : ''}`}>
+                        <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
                         <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
                         <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
                       </div>
                     </div>
                   );
                 })()
-              ) : (
-                <div className="text-center text-sm text-gray-400">{t.total}: {displaySum.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
