@@ -7,6 +7,7 @@ import { Plus, X, ArrowRight, Trash2, Edit2, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppModal from '@/components/AppModal';
 import { Category } from '@/types';
+import { translations } from '@/lib/translations';
 
 const EMOJIS = [
   '💰','🛒','🚗','🏠','🍔','🍕','🍺','☕️','💊','🎁','🎮','🎬','👟','👕','📱','💻',
@@ -14,30 +15,9 @@ const EMOJIS = [
   '🥗','🥐','🚲','🚌','🚇','🎭','💈','🛀','🧼','🧹','🕯','📫','📦','💎','🍣','🍹'
 ];
 
-const translations = {
-  ru: {
-    howMuch: 'Сколько?', expense: 'Расход', income: 'Доход', next: 'Далее',
-    choose: 'Выберите категорию', create: 'Создать', newCat: 'Новая категория',
-    editCat: 'Редактирование', name: 'Название', placeholder: 'Напр: Такси',
-    btnCreate: 'Создать категорию', btnSave: 'Сохранить изменения',
-    confirmDelete: 'Удалить категорию?', confirmDeleteMessage: 'Категория будет удалена. Транзакции с ней останутся.',
-    btnDelete: 'Удалить', btnCancel: 'Отмена',
-    RUB: 'Российский рубль (₽)', USD: 'Доллар США ($)'
-  },
-  en: {
-    howMuch: 'How much?', expense: 'Expense', income: 'Income', next: 'Next',
-    choose: 'Choose category', create: 'Create', newCat: 'New category',
-    editCat: 'Edit category', name: 'Name', placeholder: 'e.g. Taxi',
-    btnCreate: 'Create category', btnSave: 'Save changes',
-    confirmDelete: 'Delete category?', confirmDeleteMessage: 'Category will be removed. Transactions will keep their category name.',
-    btnDelete: 'Delete', btnCancel: 'Cancel',
-    RUB: 'Russian Ruble (₽)', USD: 'US Dollar ($)'
-  }
-};
-
 export default function AddTransaction() {
   const { addTransaction, setCategories: setGlobalCategories, lang, currency, rate } = useFinanceStore();
-  const t = translations[lang === 'ru' ? 'ru' : 'en'];
+  const t = translations[lang as keyof typeof translations];
 
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);

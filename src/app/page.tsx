@@ -2,7 +2,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Tab, Period } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Settings, Loader2, User, ArrowUpRight, ArrowDownLeft, DollarSign, Coins, Trash2 } from 'lucide-react';
+import { LogOut, Settings, Loader2, User, ArrowUpRight, ArrowDownLeft, DollarSign, Trash2, BadgeRussianRuble } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -17,25 +17,9 @@ import AppModal from '@/components/AppModal';
 import { useFinanceStore } from '@/store/useStore';
 import { Transaction } from '@/types';
 import { supabase } from '@/lib/supabase';
+import { translations, detectBrowserLanguage } from '@/lib/translations';
 
 const Chart = dynamic(() => import('@/components/Chart'), { ssr: false });
-
-const translations = {
-  ru: { 
-    greet: 'Привет', balance: 'Ваш баланс', income: 'Приход', expense: 'Расход', 
-    history: 'История', ops: 'операций', empty: 'История пуста 🏜', loading: 'Загрузка...',
-    analytics: 'Аналитика',
-    deleteConfirmTitle: 'Удалить операцию?', deleteConfirmMessage: 'Эта операция будет удалена из истории.',
-    deleteBtn: 'Удалить', cancelBtn: 'Отмена'
-  },
-  en: { 
-    greet: 'Welcome', balance: 'Total Balance', income: 'Income', expense: 'Expense', 
-    history: 'History', ops: 'transactions', empty: 'No history yet 🏜', loading: 'Loading...',
-    analytics: 'Analytics',
-    deleteConfirmTitle: 'Delete transaction?', deleteConfirmMessage: 'It will be removed from your history.',
-    deleteBtn: 'Delete', cancelBtn: 'Cancel'
-  }
-};
 
 export default function Home() {
   const router = useRouter();
@@ -59,6 +43,19 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState('');
 
   const t = translations[lang as keyof typeof translations];
+
+  // 0. ИНИЦИАЛИЗАЦИЯ ЯЗЫКА БРАУЗЕРА (при первой загрузке)
+  useEffect(() => {
+    // Проверяем наличие сохраненного языка в localStorage
+    const stored = localStorage.getItem('zen-finance-storage');
+    const savedState = stored ? JSON.parse(stored) : null;
+    
+    if (!savedState || !savedState.state?.lang) {
+      // Если языка нет в localStorage, используем язык браузера
+      const browserLang = detectBrowserLanguage();
+      useFinanceStore.getState().setLang(browserLang);
+    }
+  }, []);
 
   // 1. ЗАГРУЗКА КУРСА ВАЛЮТ (Обновляем глобальный стор)
   useEffect(() => {
@@ -200,7 +197,7 @@ export default function Home() {
             style={{backgroundColor: 'var(--bg-button)', borderColor: 'var(--border-primary)'}}
             className="p-3 rounded-2xl border shadow-sm hover:opacity-80 active:scale-90 transition-all flex items-center gap-2"
           >
-            {currency === 'RUB' ? <Coins size={20} className="text-amber-500" /> : <DollarSign size={20} className="text-green-500" />}
+            {currency === 'RUB' ? <BadgeRussianRuble size={20} className="text-blue-500" /> : <DollarSign size={20} className="text-green-500" />}
             <span className="text-[10px] font-bold">{currency}</span>
           </button>
           

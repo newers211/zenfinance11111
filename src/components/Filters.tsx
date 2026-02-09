@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useFinanceStore } from '@/store/useStore';
 import { Tab, Period } from '@/types';
+import { translations } from '@/lib/translations';
 
 interface FiltersProps {
   activeTab: Tab;
@@ -12,13 +13,7 @@ interface FiltersProps {
 
 export default function Filters({ activeTab, setActiveTab, activePeriod, setActivePeriod }: FiltersProps) {
   const { lang } = useFinanceStore();
-  
-  // Словарик для отображения
-  const labels: Record<string, { all: string; day: string; week: string; month: string; expense: string; income: string }> = {
-    ru: { all: 'Все', day: 'День', week: 'Неделя', month: 'Месяц', expense: 'Расходы', income: 'Доходы' },
-    en: { all: 'All', day: 'Day', week: 'Week', month: 'Month', expense: 'Expenses', income: 'Income' }
-  };
-  const t = labels[lang];
+  const t = translations[lang as keyof typeof translations];
 
   const periods: { id: import('@/types').Period; label: string }[] = [
     { id: 'all', label: t.all },
@@ -29,8 +24,8 @@ export default function Filters({ activeTab, setActiveTab, activePeriod, setActi
 
   const tabs: { id: import('@/types').Tab; label: string }[] = [
     { id: 'all', label: t.all },
-    { id: 'expense', label: t.expense },
-    { id: 'income', label: t.income },
+    { id: 'expense', label: t.expenses },
+    { id: 'income', label: t.incomes },
   ];
 
   return (

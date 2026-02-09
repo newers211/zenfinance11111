@@ -2,9 +2,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Moon, Sun, Globe } from 'lucide-react';
 import { useFinanceStore } from '@/store/useStore';
+import { translations } from '@/lib/translations';
 
 export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const { theme, setTheme, lang, setLang } = useFinanceStore();
+  const t = translations[lang as keyof typeof translations];
 
   const handleThemeChange = (newTheme: 'light' | 'dark') => {
     console.log('🔄 Changing theme to:', newTheme);
@@ -36,7 +38,7 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
           >
             {/* Заголовок */}
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-black" style={{color: 'var(--text-primary)'}}>Settings</h2>
+              <h2 className="text-2xl font-black" style={{color: 'var(--text-primary)'}}>{t.settingsTitle}</h2>
               <motion.button 
                 onClick={onClose}
                 whileHover={{ scale: 1.1 }}
@@ -53,7 +55,7 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Sun size={18} className="text-amber-500 dark:text-amber-400" />
-                  <p className="text-sm font-bold uppercase tracking-widest" style={{color: 'var(--text-secondary)'}}>Theme</p>
+                  <p className="text-sm font-bold uppercase tracking-widest" style={{color: 'var(--text-secondary)'}}>{t.themeLabel}</p>
                 </div>
                 
                 <div className="space-y-3">
@@ -75,8 +77,8 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
                         <Sun size={20} className={theme === 'light' ? 'text-blue-600' : 'text-zinc-500'} />
                       </div>
                       <div className="text-left">
-                        <p className="font-bold">Light</p>
-                        <p className="text-xs" style={{color: 'var(--text-secondary)'}}>White with accents</p>
+                        <p className="font-bold">{t.themeLight}</p>
+                        <p className="text-xs" style={{color: 'var(--text-secondary)'}}>{t.themeLightDesc}</p>
                       </div>
                     </div>
                     {theme === 'light' && (
@@ -105,8 +107,8 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
                         <Moon size={20} className={theme === 'dark' ? 'text-blue-400' : 'text-zinc-500'} />
                       </div>
                       <div className="text-left">
-                        <p className="font-bold">Dark</p>
-                        <p className="text-xs" style={{color: 'var(--text-secondary)'}}>Premium look</p>
+                        <p className="font-bold">{t.themeDark}</p>
+                        <p className="text-xs" style={{color: 'var(--text-secondary)'}}>{t.themeDarkDesc}</p>
                       </div>
                     </div>
                     {theme === 'dark' && (
@@ -123,7 +125,7 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Globe size={18} className="text-emerald-500 dark:text-emerald-400" />
-                  <p className="text-sm font-bold uppercase tracking-widest" style={{color: 'var(--text-secondary)'}}>Language</p>
+                  <p className="text-sm font-bold uppercase tracking-widest" style={{color: 'var(--text-secondary)'}}>{t.languageLabel}</p>
                 </div>
                 
                 <div style={{backgroundColor: 'var(--bg-button)'}} className="grid grid-cols-2 gap-3 p-1.5 rounded-[16px]">
@@ -157,7 +159,7 @@ export default function SettingsModal({ isOpen, onClose }: { isOpen: boolean, on
               {/* Информационный блок */}
               <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center leading-relaxed">
-                  ✨ Все изменения сохраняются автоматически
+                  {t.infoText}
                 </p>
               </div>
             </div>
