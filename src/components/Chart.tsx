@@ -126,47 +126,43 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
         </ResponsiveContainer>
 
         {/* Info panel: on md+ show to the right, on mobile show positioned based on segment angle */}
-        <div className="w-full pointer-events-none relative h-0">
-          <div className="pointer-events-auto bg-transparent">
-            {selectedIndex !== null && chartData[selectedIndex] ? (
-              (() => {
-                const item = chartData[selectedIndex];
-                const val = currencySign === '₽' ? item.value : item.value / rate;
-                const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
-                const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
-                
-                // Рассчитываем кумулятивный процент для определения позиции сегмента
-                let cumulativePercent = 0;
-                for (let i = 0; i < selectedIndex; i++) {
-                  cumulativePercent += (chartData[i].value / totalSum) * 100;
-                }
-                const startAngle = (cumulativePercent / 100) * 360;
-                const endAngle = ((cumulativePercent + pct) / 100) * 360;
-                const midAngle = (startAngle + endAngle) / 2;
-                
-                // Нормализуем угол к 0-360
-                const normalizedAngle = midAngle % 360;
-                
-                // Определяем позицию: справа (если 270-90) или слева (если 90-270)
-                // Справа: от -90 до 90 градусов (или от 270 до 450)
-                const isRight = normalizedAngle > 270 || normalizedAngle < 90;
-                
-                return (
-                  <div className={`md:absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 fixed md:static ${isRight ? 'right-3 md:right-auto' : 'left-3 md:left-auto'} bottom-4 md:bottom-auto md:ml-4 md:w-48 w-auto max-w-32 md:max-w-full`}>
-                    <div className="flex items-center gap-2 md:gap-3 bg-white/90 md:bg-white/0 dark:bg-zinc-800/90 md:dark:bg-transparent backdrop-blur-sm md:backdrop-blur-none rounded-xl md:rounded-none p-3 md:p-0 border md:border-0 border-gray-100 dark:border-zinc-700 md:dark:border-0">
-                      <div className="w-8 md:w-10 h-8 md:h-10 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
-                      <div className="text-left">
-                        <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
-                        <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
-                        <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
-                      </div>
+        {/* Info panel: mobile above chart, desktop to the right */}
+        {selectedIndex !== null && chartData[selectedIndex] ? (
+          (() => {
+            const item = chartData[selectedIndex];
+            const val = currencySign === '₽' ? item.value : item.value / rate;
+            const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
+            const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
+            
+            return (
+              <>
+                {/* Mobile version: shows above the chart */}
+                <div className="md:hidden w-full mb-4 pointer-events-auto">
+                  <div className="flex items-center gap-3 bg-white/95 dark:bg-zinc-800/95 backdrop-blur-sm rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-lg">
+                    <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
+                      <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
+                      <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
                     </div>
                   </div>
-                );
-              })()
-            ) : null}
-          </div>
-        </div>
+                </div>
+                
+                {/* Desktop version: positioned to the right */}
+                <div className="hidden md:absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 md:w-48 md:ml-4 md:pointer-events-auto">
+                  <div className="flex items-center gap-3 bg-white/0 dark:bg-transparent backdrop-blur-none rounded-none p-0">
+                    <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
+                    <div className="text-left">
+                      <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
+                      <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
+                      <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            );
+          })()
+        ) : null}
 
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
           <AnimatePresence mode="wait">
