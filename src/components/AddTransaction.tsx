@@ -116,6 +116,8 @@ export default function AddTransaction() {
       await supabase.from('categories').insert([payload]);
     }
 
+    // Refresh local and global categories so the UI shows the newly created/updated category
+    await fetchCats();
     const { data: allCats } = await supabase.from('categories').select('*').eq('user_id', userId);
     if (allCats) setGlobalCategories(allCats);
 
@@ -123,12 +125,6 @@ export default function AddTransaction() {
     setCatName('');
     setCatIcon('📦');
     setShowEmojiPicker(false);
-    (async () => {
-      const userId = await getUserId();
-      if (!userId) return;
-      const { data: allCats } = await supabase.from('categories').select('*').eq('user_id', userId);
-      if (allCats) setGlobalCategories(allCats);
-    })();
   };
 
   const doDeleteCategory = async () => {
