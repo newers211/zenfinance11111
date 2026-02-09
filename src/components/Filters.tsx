@@ -20,14 +20,14 @@ export default function Filters({ activeTab, setActiveTab, activePeriod, setActi
   };
   const t = labels[lang];
 
-  const periods = [
+  const periods: { id: import('@/types').Period; label: string }[] = [
     { id: 'all', label: t.all },
     { id: 'day', label: t.day },
     { id: 'week', label: t.week },
     { id: 'month', label: t.month },
   ];
 
-  const tabs = [
+  const tabs: { id: import('@/types').Tab; label: string }[] = [
     { id: 'all', label: t.all },
     { id: 'expense', label: t.expense },
     { id: 'income', label: t.income },

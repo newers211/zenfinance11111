@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useMemo } from 'react';
+import { Tab, Period } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, Settings, Loader2, User, ArrowUpRight, ArrowDownLeft, DollarSign, Coins, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -50,8 +51,8 @@ export default function Home() {
     removeTransaction
   } = useFinanceStore();
 
-  const [activeTab, setActiveTab] = useState('all'); 
-  const [activePeriod, setActivePeriod] = useState('all');
+  const [activeTab, setActiveTab] = useState<Tab>('all'); 
+  const [activePeriod, setActivePeriod] = useState<Period>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; tr: { id: string } | null }>({ open: false, tr: null });
   const [loading, setLoading] = useState(true);
@@ -287,7 +288,7 @@ export default function Home() {
                   <div className="min-w-0">
                     <p className="font-bold text-sm truncate" style={{color: 'var(--text-primary)'}}>{tr.category}</p>
                     <p className="text-[10px] font-bold uppercase tracking-widest" style={{color: 'var(--text-secondary)'}}>
-                      {new Date(tr.created_at).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', { day: 'numeric', month: 'short' })}
+                      {tr.created_at ? new Date(tr.created_at).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', { day: 'numeric', month: 'short' }) : ''}
                     </p>
                   </div>
                 </div>

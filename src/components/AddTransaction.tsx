@@ -57,6 +57,18 @@ export default function AddTransaction() {
     return user?.id;
   };
 
+  const fetchCats = async () => {
+    const userId = await getUserId();
+    if (!userId) return;
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('type', type);
+
+    if (data) setLocalCats(data as Category[]);
+  };
+
   useEffect(() => {
     if (!isOpen) return;
     (async () => {
@@ -256,7 +268,7 @@ export default function AddTransaction() {
                           <span className="text-[11px] font-black uppercase tracking-widest opacity-60 text-slate-900 dark:text-white">{c.name}</span>
                         </button>
                         <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={(e) => { e.stopPropagation(); setIsEditing(c); setCatName(c.name); setCatIcon(c.icon); }} className="p-2 bg-zinc-50 dark:bg-zinc-700 shadow-md rounded-lg text-blue-500"><Edit2 size={14}/></button>
+                          <button onClick={(e) => { e.stopPropagation(); setIsEditing(c); setCatName(c.name); setCatIcon(c.icon || '📦'); }} className="p-2 bg-zinc-50 dark:bg-zinc-700 shadow-md rounded-lg text-blue-500"><Edit2 size={14}/></button>
                           <button onClick={(e) => openDeleteCategoryModal(c.id, e)} className="p-2 bg-zinc-50 dark:bg-zinc-700 shadow-md rounded-lg text-red-500"><Trash2 size={14}/></button>
                         </div>
                       </div>

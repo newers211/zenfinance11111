@@ -1,6 +1,6 @@
 'use client'
 import { useState, useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFinanceStore } from '@/store/useStore';
 import { Transaction } from '@/types';
@@ -32,6 +32,7 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
   const { lang } = useFinanceStore();
   const t = translations[lang === 'ru' ? 'ru' : 'en'];
   const [view, setView] = useState<'expense' | 'income'>('expense');
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const chartData = useMemo(() => {
     const grouped = data
@@ -86,7 +87,7 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
         </div>
       </div>
 
-      <div className="h-64 w-full relative">
+      <div className="h-64 w-full relative flex flex-col md:flex-row items-center md:items-stretch">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -101,45 +102,57 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
               animationEasing="ease-out"
               cx="50%"
               cy="50%"
+              onClick={(entry: any, index: number) => setSelectedIndex(index)}
             >
-              {chartData.length ? chartData.map((_, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={view === 'expense' ? EXPENSE_COLORS[index % EXPENSE_COLORS.length] : INCOME_COLORS[index % INCOME_COLORS.length]} 
-                  className="hover:opacity-80 transition-opacity cursor-pointer outline-none"
-                />
-              )) : (
+              {chartData.length ? chartData.map((_, index) => {
+                const fill = view === 'expense' ? EXPENSE_COLORS[index % EXPENSE_COLORS.length] : INCOME_COLORS[index % INCOME_COLORS.length];
+                const isActive = selectedIndex === index;
+                return (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={fill}
+                    stroke={isActive ? '#00000020' : 'none'}
+                    strokeWidth={isActive ? 6 : 0}
+                    className="hover:opacity-80 transition-opacity cursor-pointer outline-none"
+                  />
+                );
+              }) : (
                 <Cell fill="#f4f4f5" />
               )}
             </Pie>
             
-            <Tooltip 
-              cursor={false}
-              content={({ active, payload }: { active?: boolean; payload?: unknown[] }) => {
-                if (active && payload && payload.length) {
-                  const item = payload[0] as unknown as { name?: string; value?: number };
-                  const val = currencySign === '₽' ? (item.value || 0) : (item.value || 0) / rate;
-                  return (
-                    <div style={{
-                      backgroundColor: 'var(--bg-card)',
-                      borderColor: 'var(--border-primary)',
-                      color: 'var(--text-primary)'
-                    }} className="px-4 py-3 rounded-2xl shadow-2xl border outline-none">
-                      <p className="text-[10px] font-black uppercase mb-1" style={{color: 'var(--text-secondary)'}}>
-                        {item.name}
-                      </p>
-                      <p className="text-sm font-black">
-                        {val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}
-                      </p>
-                    </div>
-                  );
-                }
-                return null;
-              }}
-            />
+            {/* Tooltip removed to avoid hover-only labels; selection is via click/touch and shows details in the external panel. */}
           </PieChart>
         </ResponsiveContainer>
-        
+
+        {/* Info panel: on md+ show to the right, on mobile show below chart */}
+        <div className="md:absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 w-full md:w-48 pointer-events-none">
+          <div className="w-full md:static md:ml-4 flex items-center md:block justify-center">
+            <div className="pointer-events-auto bg-transparent">
+              {selectedIndex !== null && chartData[selectedIndex] ? (
+                (() => {
+                  const item = chartData[selectedIndex];
+                  const val = currencySign === '₽' ? item.value : item.value / rate;
+                  const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
+                  const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
+                  return (
+                    <div className="flex items-center gap-3 bg-transparent md:bg-white/0 md:backdrop-blur-sm md:rounded-xl md:p-3 md:border md:border-gray-100 dark:md:border-zinc-800">
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: color }} />
+                      <div className="text-left">
+                        <div className="text-xs font-black uppercase" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
+                        <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
+                        <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div className="text-center text-sm text-gray-400">{t.total}: {displaySum.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
           <AnimatePresence mode="wait">
             <motion.div
