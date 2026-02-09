@@ -228,21 +228,21 @@ export default function Home() {
         />
 
         <div className="grid grid-cols-2 gap-3 md:gap-4">
-          <motion.div whileHover={{ y: -5 }} style={{backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-primary)'}} className="p-4 md:p-6 rounded-[32px] border shadow-xl shadow-green-500/5 relative overflow-hidden group hover:shadow-2xl transition-all">
+          <motion.div whileHover={{ y: -5 }} style={{backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-primary)'}} className="p-5 md:p-7 rounded-[24px] border shadow-xl shadow-green-500/5 relative overflow-hidden group hover:shadow-2xl transition-all">
             <div className="absolute -right-2 -top-2 opacity-10 text-green-500 group-hover:scale-110 transition-transform">
               <ArrowUpRight size={50}/>
             </div>
-            <p className="text-[9px] md:text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest mb-2">{t.income}</p>
+            <p className="text-[9px] md:text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest mb-3">{t.income}</p>
             <p className="text-xl md:text-2xl font-black" style={{color: 'var(--text-primary)'}}>
               {currency === 'RUB' ? '+' : ''}{formatVal(inc).text} {formatVal(inc).sign}
             </p>
           </motion.div>
           
-          <motion.div whileHover={{ y: -5 }} style={{backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-primary)'}} className="p-4 md:p-6 rounded-[32px] border shadow-xl shadow-red-500/5 relative overflow-hidden group hover:shadow-2xl transition-all">
+          <motion.div whileHover={{ y: -5 }} style={{backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-primary)'}} className="p-5 md:p-7 rounded-[24px] border shadow-xl shadow-red-500/5 relative overflow-hidden group hover:shadow-2xl transition-all">
             <div className="absolute -right-2 -top-2 opacity-10 text-red-500 group-hover:scale-110 transition-transform">
               <ArrowDownLeft size={50}/>
             </div>
-            <p className="text-[9px] md:text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-2">{t.expense}</p>
+            <p className="text-[9px] md:text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-3">{t.expense}</p>
             <p className="text-xl md:text-2xl font-black" style={{color: 'var(--text-primary)'}}>
               {currency === 'RUB' ? '-' : ''}{formatVal(exp).text} {formatVal(exp).sign}
             </p>

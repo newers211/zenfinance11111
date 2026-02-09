@@ -18,9 +18,9 @@ export default function BalanceCard({ amount, title, currencySign, rate }: Balan
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       style={{backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-primary)'}}
-      className="w-full p-5 md:p-8 rounded-[40px] border shadow-2xl shadow-blue-500/5 relative overflow-hidden transition-all duration-500"
+      className="w-full p-6 md:p-10 rounded-[28px] border shadow-2xl shadow-blue-500/5 relative overflow-hidden transition-all duration-500"
     >
-      <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-3 md:mb-4 relative z-10" style={{color: 'var(--text-secondary)'}}>
+      <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-4 md:mb-5 relative z-10" style={{color: 'var(--text-secondary)'}}>
         {title}
       </p>
       
