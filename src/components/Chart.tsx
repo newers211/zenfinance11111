@@ -125,44 +125,33 @@ export default function Chart({ data = [], currencySign, rate }: ChartProps) {
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Info panel: on md+ show to the right, on mobile show positioned based on segment angle */}
-        {/* Info panel: mobile above chart, desktop to the right */}
-        {selectedIndex !== null && chartData[selectedIndex] ? (
-          (() => {
-            const item = chartData[selectedIndex];
-            const val = currencySign === '₽' ? item.value : item.value / rate;
-            const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
-            const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
-            
-            return (
-              <>
-                {/* Mobile version: shows above the chart */}
-                <div className="md:hidden w-full mb-4 pointer-events-auto">
-                  <div className="flex items-center gap-3 bg-white/95 dark:bg-zinc-800/95 backdrop-blur-sm rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-lg">
-                    <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
-                      <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
-                      <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
+        {/* Info panel: on md+ show to the right, on mobile show below chart */}
+        <div className="md:absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 w-full md:w-48 pointer-events-none">
+          <div className="w-full md:static md:ml-4 flex items-center md:block justify-center">
+            <div className="pointer-events-auto bg-transparent">
+              {selectedIndex !== null && chartData[selectedIndex] ? (
+                (() => {
+                  const item = chartData[selectedIndex];
+                  const val = currencySign === '₽' ? item.value : item.value / rate;
+                  const pct = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
+                  const color = view === 'expense' ? EXPENSE_COLORS[selectedIndex % EXPENSE_COLORS.length] : INCOME_COLORS[selectedIndex % INCOME_COLORS.length];
+                  // Динамическое позиционирование в зависимости от индекса (слева или справа)
+                  const isRight = selectedIndex % 2 === 0;
+                  return (
+                    <div className={`flex items-center gap-2 md:gap-3 bg-transparent md:bg-white/0 md:backdrop-blur-sm md:rounded-xl md:p-3 md:border md:border-gray-100 dark:md:border-zinc-800 ${isRight ? 'flex-row-reverse md:flex-row' : 'flex-row'}`}>
+                      <div className="w-8 md:w-10 h-8 md:h-10 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
+                      <div className={`text-left ${isRight ? 'text-right md:text-left' : ''}`}>
+                        <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
+                        <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
+                        <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                
-                {/* Desktop version: positioned to the right */}
-                <div className="hidden md:absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 md:w-48 md:ml-4 md:pointer-events-auto">
-                  <div className="flex items-center gap-3 bg-white/0 dark:bg-transparent backdrop-blur-none rounded-none p-0">
-                    <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: color }} />
-                    <div className="text-left">
-                      <div className="text-xs font-black uppercase truncate" style={{color: 'var(--text-secondary)'}}>{item.name}</div>
-                      <div className="text-sm font-bold" style={{color: 'var(--text-primary)'}}>{val.toLocaleString(undefined, { maximumFractionDigits: 2 })} {currencySign}</div>
-                      <div className="text-[11px] text-gray-500">{pct.toFixed(1)}%</div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            );
-          })()
-        ) : null}
+                  );
+                })()
+              ) : null}
+            </div>
+          </div>
+        </div>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
           <AnimatePresence mode="wait">
