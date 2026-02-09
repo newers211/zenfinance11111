@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useFinanceStore } from '@/store/useStore';
 import { Plus, X, ArrowRight, Trash2, Edit2, ChevronLeft } from 'lucide-react';
@@ -30,6 +30,9 @@ export default function AddTransaction() {
   const [catIcon, setCatIcon] = useState('📦');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [deleteCatModal, setDeleteCatModal] = useState<{ open: boolean; id: string | null }>({ open: false, id: null });
+
+  // Ref для автоматической прокрутки инпута в видимую область
+  const amountInputRef = useRef<HTMLInputElement>(null);
 
   // 🔑 получаем user_id (ОБЯЗАТЕЛЬНО для RLS)
   const getUserId = async () => {
@@ -63,6 +66,16 @@ export default function AddTransaction() {
       if (data) setLocalCats(data as Category[]);
     })();
   }, [isOpen, type]);
+
+  // Автоматическая прокрутка и фокус на инпут при открытии step 1
+  useEffect(() => {
+    if (isOpen && step === 1 && amountInputRef.current) {
+      setTimeout(() => {
+        amountInputRef.current?.focus();
+        amountInputRef.current?.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }, 200);
+    }
+  }, [isOpen, step]);
 
   // ➕ создать / ✏️ обновить категорию
   const handleSaveCat = async () => {
@@ -186,7 +199,7 @@ export default function AddTransaction() {
             <motion.div 
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} 
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-t-[40px] p-8 shadow-2xl min-h-[550px]"
+              className="relative w-full max-w-xl max-h-screen overflow-y-auto bg-white dark:bg-zinc-900 rounded-t-[40px] p-8 pb-96 shadow-2xl min-h-[550px]"
             >
               {step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
@@ -209,6 +222,7 @@ export default function AddTransaction() {
                   <div className="relative mb-12">
                     {/* ИСПРАВЛЕННЫЙ ИНПУТ */}
                     <input 
+                      ref={amountInputRef}
                       autoFocus type="number" step="0.01" inputMode="decimal"
                       value={amount} onChange={e => setAmount(e.target.value)} 
                       placeholder="0.00" 
