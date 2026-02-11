@@ -330,7 +330,7 @@ export default function Chart({ data = [], currencySign = '₽', rate = 1 }: Cha
                   <motion.button
                     onClick={() => setSelectedIndex(null)}
                     aria-label="close"
-                    className="text-lg font-bold flex-shrink-0 cursor-pointer"
+                    className="text-2xl font-bold flex-shrink-0 cursor-pointer p-2 -mr-2 rounded-lg transition-colors hover:bg-opacity-50"
                     style={{color: 'var(--text-secondary)'}}
                     whileHover={{ scale: 1.25, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
