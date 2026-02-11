@@ -111,8 +111,17 @@ export default function Chart({ data = [], currencySign = '₽', rate = 1 }: Cha
   const selectedItem = isSelected ? chartData[selectedIndex!] : null;
 
   function handleClick(_: any, index: number) {
-    if (selectedIndex === index) setSelectedIndex(null);
-    else setSelectedIndex(index);
+    // Проверяем валидность индекса
+    if (!Array.isArray(chartData) || index < 0 || index >= chartData.length) {
+      return;
+    }
+    
+    // Переключаем выбор
+    if (selectedIndex === index) {
+      setSelectedIndex(null);
+    } else {
+      setSelectedIndex(index);
+    }
   }
 
   // Если нет данных - показываем пустое состояние
@@ -176,7 +185,7 @@ export default function Chart({ data = [], currencySign = '₽', rate = 1 }: Cha
       <div className="flex flex-col md:flex-row items-stretch gap-6">
         <motion.div
           layout
-          animate={{ x: isSelected ? (typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : -48) : 0, scale: isSelected ? 0.92 : 1 }}
+          animate={{ scale: isSelected ? 0.95 : 1 }}
           transition={{ type: 'spring', stiffness: 280, damping: 32 }}
           className="w-full md:w-1/2 lg:w-5/12 h-64 flex items-center justify-center relative"
         >
