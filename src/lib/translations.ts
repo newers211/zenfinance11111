@@ -51,6 +51,15 @@ export const translations = {
     RUB: 'Российский рубль (₽)',
     USD: 'Доллар США ($)',
 
+    // Chart компонент
+    total: 'Итого',
+    hint: 'Нажмите снова, чтобы вернуть',
+    shareLabel: 'От общей суммы',
+    sumLabel: 'Сумма',
+    detailsLabel: 'Детали',
+    categoryLabel: 'Категория',
+    itemsLabel: 'Позиции',
+
     // Другие компоненты
     logout: 'Выход',
     settings: 'Настройки',
@@ -111,6 +120,15 @@ export const translations = {
     btnCancel: 'Cancel',
     RUB: 'Russian Ruble (₽)',
     USD: 'US Dollar ($)',
+
+    // Chart компонент
+    total: 'Total',
+    hint: 'Click again to reset',
+    shareLabel: 'Share of total',
+    sumLabel: 'Amount',
+    detailsLabel: 'Details',
+    categoryLabel: 'Category',
+    itemsLabel: 'Items',
 
     // Other components
     logout: 'Logout',

@@ -61,18 +61,32 @@ export default function Home() {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 сек timeout
+        
+        const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) {
+          throw new Error(`API returned ${res.status}`);
+        }
+        
         const data = await res.json();
         if (data && data.rates && data.rates.RUB) {
           setRate(data.rates.RUB);
+        } else {
+          console.warn("Курс RUB не найден в ответе API");
+          setRate(92); // Запасной вариант
         }
-      } catch (err) {
-        console.error("Ошибка загрузки курса:", err);
-        setRate( rate || 92); // Запасной вариант, если API упал
+      } catch (err: any) {
+        console.error("Ошибка загрузки курса валют:", err?.message || err);
+        setRate(92); // Дефолтный курс при ошибке
       }
     };
     fetchRate();
-  }, [setRate, rate]);
+  }, [setRate]);
 
   // 2. ФУНКЦИЯ ФОРМАТИРОВАНИЯ (Для карточек и истории)
   const formatVal = (val: number) => {
